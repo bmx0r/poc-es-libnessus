@@ -3,8 +3,9 @@
 
 Vagrant.configure("2") do |config|
 
-  config.vm.box = "base"
-  config.vm.box_url = "http://urlforyourbasebox"
+  config.vm.box = "CentOS-6.4-x86_64-minimal"
+  config.vm.box_url = "http://developer.nrel.gov/downloads/vagrant-boxes/CentOS-6.4-x86_64-v20130731.box"
+  config.vm.network "private_network", ip: "192.168.4.10"
 
   config.vm.provider :virtualbox do |vb|
     # This allows symlinks to be created within the /vagrant root directory, 
@@ -17,6 +18,7 @@ Vagrant.configure("2") do |config|
   # puppet modules. This has to be done before the puppet provisioning so that
   # the modules are available when puppet tries to parse its manifests.
   config.vm.provision :shell, :path => "shell/librarian-puppet.sh"
+  config.vm.provision :shell, :inline => "sudo service iptables stop;sudo chkconfig iptables off"
 
   # Now run the puppet provisioner. Note that the modules directory is entirely
   # managed by librarian-puppet
@@ -24,5 +26,12 @@ Vagrant.configure("2") do |config|
     puppet.manifests_path = "puppet/manifests"
     puppet.manifest_file  = "main.pp"
   end
+#Download kibana tar.gz
+# this is uggly, need to write a puppet module for kibana4
+  config.vm.provision :shell, :inline => "if [ ! -f kibana-4.0.0-BETA2.tar.gz ]; then  wget  -q -O kibana-4.0.0-BETA2.tar.gz https://download.elasticsearch.org/kibana/kibana/kibana-4.0.0-BETA2.tar.gz; fi"
+  config.vm.provision :shell, :inline => "if [ ! -d kibana-4.0.0-BETA2 ]; then tar -xvzf kibana-4.0.0-BETA2.tar.gz; fi"
+  config.vm.provision :shell, :inline => "kibana-4.0.0-BETA2/bin/kibana >>kibana.log 2>&1 &"
 
+#Load nessus data into ES
+  config.vm.provision :shell, :inline => "cd python-libnessus;cd examples/;python es.py"
 end
