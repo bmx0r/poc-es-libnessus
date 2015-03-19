@@ -28,9 +28,10 @@ Vagrant.configure("2") do |config|
   end
 #Download kibana tar.gz
 # this is uggly, need to write a puppet module for kibana4
-  config.vm.provision :shell, :inline => "if [ ! -f kibana-4.0.0-BETA2.tar.gz ]; then  wget  -q -O kibana-4.0.0-BETA2.tar.gz https://download.elasticsearch.org/kibana/kibana/kibana-4.0.0-BETA2.tar.gz; fi"
-  config.vm.provision :shell, :inline => "if [ ! -d kibana-4.0.0-BETA2 ]; then tar -xvzf kibana-4.0.0-BETA2.tar.gz; fi"
-  config.vm.provision :shell, :inline => "kibana-4.0.0-BETA2/bin/kibana >>kibana.log 2>&1 &"
+# https://download.elasticsearch.org/kibana/kibana/kibana-4.0.1-linux-x64.tar.gz
+  config.vm.provision :shell, :inline => "if [ ! -f kibana-4.tar.gz ]; then  wget  -q -O kibana-4.tar.gz https://download.elasticsearch.org/kibana/kibana/kibana-4.0.1-linux-x64.tar.gz; fi"
+  config.vm.provision :shell, :inline => "if [ ! -d kibana-4 ]; then tar -xvzf kibana-4.tar.gz; fi"
+  config.vm.provision :shell, :inline => "kibana-4/bin/kibana >>kibana.log 2>&1 &"
 
 #Load nessus data into ES
   config.vm.provision :shell, :inline => "cd python-libnessus;cd examples/;python es.py"
