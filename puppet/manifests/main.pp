@@ -14,10 +14,31 @@ python::pip { 'python-libnessus' :
   pkgname       => 'python-libnessus',
   ensure        => 'present',
  }
-python::pip { 'python-elasticsearch' :
-  pkgname       => 'elasticsearch',
+python::pip { 'python-unittest2' :
+  pkgname       => 'unittest2',
   ensure        => 'present',
  }
+python::pip { 'python-six' :
+  pkgname       => 'six',
+  ensure        => 'present',
+ }
+python::pip { 'python-traceback2' :
+  pkgname       => 'traceback2',
+  ensure        => 'present',
+ }
+python::pip { 'python-urllib3' :
+  pkgname       => 'urllib3',
+  ensure        => 'present',
+ }
+ python::pip { 'python-elasticsearch' :
+  pkgname       => 'elasticsearch',
+  ensure        => '1.4.0',
+ }
+ # python::pip { 'python-argsparse' :
+ #  pkgname       => 'argparse',
+ #  ensure        => 'present',
+ # }
+
 
 vcsrepo { '/home/vagrant/python-libnessus':
   ensure   => present,
@@ -37,7 +58,6 @@ vcsrepo { '/home/vagrant/python-libnessus':
     'git':
       ensure => present;
   }
-
 class { 'elasticsearch':
     java_install => true,
     ensure => present,
@@ -68,3 +88,5 @@ elasticsearch::instance { 'es-01':
     module_dir => 'paramedic',
     instances => ['es-01'],
   }
+
+Class['elasticsearch'] -> Class['python']

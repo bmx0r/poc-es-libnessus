@@ -25,12 +25,13 @@ Vagrant.configure("2") do |config|
   config.vm.provision :puppet do |puppet|
     puppet.manifests_path = "puppet/manifests"
     puppet.manifest_file  = "main.pp"
+    puppet.options = "--verbose --graph --graphdir /vagrant/graph"
   end
 #Download kibana tar.gz
 # this is uggly, need to write a puppet module for kibana4
 # https://download.elasticsearch.org/kibana/kibana/kibana-4.0.1-linux-x64.tar.gz
   config.vm.provision :shell, :inline => "if [ ! -f kibana-4.tar.gz ]; then  wget  -q -O kibana-4.tar.gz https://download.elasticsearch.org/kibana/kibana/kibana-4.0.1-linux-x64.tar.gz; fi"
-  config.vm.provision :shell, :inline => "if [ ! -d kibana-4 ]; then tar -xvzf kibana-4.tar.gz; fi"
+  config.vm.provision :shell, :inline => "if [ ! -d kibana-4.0.1-linux-x64 ]; then tar -xzf kibana-4.tar.gz; fi"
   config.vm.provision :shell, :inline => "kibana-4.0.1-linux-x64/bin/kibana >>kibana.log 2>&1 &"
 
 #Load nessus data into ES
